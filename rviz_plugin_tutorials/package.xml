@@ -17,6 +17,7 @@
   <depend>rviz_rendering</depend>
   <depend>sensor_msgs</depend>
   <depend>autoware_auto_control_msgs</depend>
+  <depend>autoware_auto_vehicle_msgs</depend>
 
   <build_depend>qtbase5-dev</build_depend>
 

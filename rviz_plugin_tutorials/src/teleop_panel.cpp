@@ -115,6 +115,13 @@ TeleopPanel::TeleopPanel(QWidget * parent)
 
   // Create the velocity node.
   velocity_node_ = std::make_shared<rclcpp::Node>("teleop_panel_velocity_node");
+
+  sub_velocity_ =
+    velocity_node_->create_subscription<autoware_auto_vehicle_msgs::msg::VelocityReport>(
+      "/vehicle/status/velocity_status", rclcpp::QoS{1},
+      [this](const autoware_auto_vehicle_msgs::msg::VelocityReport::SharedPtr msg) {
+        current_vel_ = msg;
+      });
 }
 
 // setVel() is connected to the DriveWidget's output, which is sent
@@ -170,6 +177,8 @@ void TeleopPanel::setTopic(const QString & new_topic)
 // publisher is ready with a valid topic name.
 void TeleopPanel::sendVel()
 {
+  rclcpp::spin_some(velocity_node_);
+
   if (!enable_stop_pub_->isChecked() && !drive_widget_->isClicked()) return;
 
   if (rclcpp::ok() && velocity_publisher_ != NULL) {
@@ -180,18 +189,24 @@ void TeleopPanel::sendVel()
 autoware_auto_control_msgs::msg::AckermannControlCommand TeleopPanel::toAutowareCmd(
   const float linear_velocity_, const float angular_velocity_)
 {
-  constexpr float wz_to_steer = 1.0;
+  constexpr float wz_to_steer = 0.3;
   constexpr float vx_to_ax = 0.1;
 
   autoware_auto_control_msgs::msg::AckermannControlCommand cmd;
   const auto t = velocity_node_->now();
   cmd.stamp = t;
   cmd.lateral.stamp = t;
-  cmd.lateral.steering_tire_angle = angular_velocity_ * wz_to_steer;
+  cmd.lateral.steering_tire_angle =
+    angular_velocity_ * wz_to_steer / std::max(1.0f, linear_velocity_);
   cmd.lateral.steering_tire_rotation_rate = 0.0;
   cmd.longitudinal.stamp = t;
   cmd.longitudinal.speed = linear_velocity_;
-  cmd.longitudinal.acceleration = linear_velocity_ * vx_to_ax;
+  if (current_vel_) {
+    cmd.longitudinal.acceleration = std::min(
+      std::max(2.0 * (linear_velocity_ - current_vel_->longitudinal_velocity), -10.0), 10.0);
+  } else {
+    cmd.longitudinal.acceleration = linear_velocity_ * vx_to_ax;
+  }
   cmd.longitudinal.jerk = 0.0;
   return cmd;
 }

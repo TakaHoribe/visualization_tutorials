@@ -39,6 +39,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rviz_common/panel.hpp"
 #include "autoware_auto_control_msgs/msg/ackermann_control_command.hpp"
+#include "autoware_auto_vehicle_msgs/msg/velocity_report.hpp"
 #endif
 
 class QLineEdit;
@@ -118,6 +119,8 @@ protected:
 
   QCheckBox* enable_stop_pub_;
 
+  rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::VelocityReport>::SharedPtr sub_velocity_;
+
   // The current name of the output topic.
   QString output_topic_;
 
@@ -128,6 +131,8 @@ protected:
   // The latest velocity values from the drive widget.
   float linear_velocity_;
   float angular_velocity_;
+
+  autoware_auto_vehicle_msgs::msg::VelocityReport::ConstSharedPtr current_vel_;
   // END_TUTORIAL
 };
 
