@@ -22,6 +22,7 @@ find_package(rclcpp REQUIRED)
 find_package(rviz_common REQUIRED)
 find_package(rviz_rendering REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(autoware_auto_control_msgs REQUIRED)
 
 ## This setting causes Qt's "MOC" generation to happen automatically.
 set(CMAKE_AUTOMOC ON)
@@ -47,7 +48,8 @@ ament_target_dependencies(${PROJECT_NAME}
   "rclcpp"
   "rviz_common"
   "rviz_rendering"
-  "sensor_msgs")
+  "sensor_msgs"
+  "autoware_auto_control_msgs")
 target_include_directories(${PROJECT_NAME} PUBLIC
   ${Qt5Widgets_INCLUDE_DIRS})
 
@@ -62,7 +64,8 @@ ament_export_dependencies(
   rclcpp
   rviz_common
   rviz_rendering
-  sensor_msgs)
+  sensor_msgs
+  autoware_auto_control_msgs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

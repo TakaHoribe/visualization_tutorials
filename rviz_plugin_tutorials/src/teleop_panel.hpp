@@ -38,6 +38,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rviz_common/panel.hpp"
+#include "autoware_auto_control_msgs/msg/ackermann_control_command.hpp"
 #endif
 
 class QLineEdit;
@@ -102,11 +103,10 @@ protected Q_SLOTS:
   // setTopic() with the result.
   void updateTopic();
 
-  void enablePublish();
+  autoware_auto_control_msgs::msg::AckermannControlCommand toAutowareCmd(
+    const float linear_velocity_, const float angular_velocity_);
 
-  void disablePublish();
-
-// Then we finish up with protected member variables.
+  // Then we finish up with protected member variables.
 
 protected:
   // The control-area widget which turns mouse events into command
@@ -123,7 +123,7 @@ protected:
 
   // The ROS node and publisher for the command velocity.
   std::shared_ptr<rclcpp::Node> velocity_node_;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr velocity_publisher_;
+  rclcpp::Publisher<autoware_auto_control_msgs::msg::AckermannControlCommand>::SharedPtr velocity_publisher_;
 
   // The latest velocity values from the drive widget.
   float linear_velocity_;
