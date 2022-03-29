@@ -196,6 +196,7 @@ void DriveWidget::mouseMoveEvent(QMouseEvent * event)
 void DriveWidget::mousePressEvent(QMouseEvent * event)
 {
   sendVelocitiesFromMouse(event->x(), event->y(), width(), height());
+  is_clicked_ = true;
 }
 
 // When the mouse leaves the widget but the button is still held down,
@@ -215,6 +216,7 @@ void DriveWidget::leaveEvent(QEvent * event)
 void DriveWidget::mouseReleaseEvent(QMouseEvent * event)
 {
   (void)event;
+  is_clicked_ = false;
   stop();
 }
 

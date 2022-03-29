@@ -31,6 +31,8 @@
 #define TELEOP_PANEL_HPP_
 
 #ifndef Q_MOC_RUN
+#include <QCheckBox>
+
 #include <memory>
 
 #include "geometry_msgs/msg/twist.hpp"
@@ -100,6 +102,10 @@ protected Q_SLOTS:
   // setTopic() with the result.
   void updateTopic();
 
+  void enablePublish();
+
+  void disablePublish();
+
 // Then we finish up with protected member variables.
 
 protected:
@@ -109,6 +115,8 @@ protected:
 
   // One-line text editor for entering the outgoing ROS topic name.
   QLineEdit * output_topic_editor_;
+
+  QCheckBox* enable_stop_pub_;
 
   // The current name of the output topic.
   QString output_topic_;

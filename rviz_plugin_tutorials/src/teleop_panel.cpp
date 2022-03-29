@@ -71,6 +71,9 @@ TeleopPanel::TeleopPanel(QWidget * parent)
   output_topic_editor_ = new QLineEdit;
   topic_layout->addWidget(output_topic_editor_);
 
+  enable_stop_pub_ = new QCheckBox("Publish stop cmd when no-click");
+  topic_layout->addWidget(enable_stop_pub_);
+
   // Then create the control widget.
   drive_widget_ = new DriveWidget;
 
@@ -166,6 +169,8 @@ void TeleopPanel::setTopic(const QString & new_topic)
 // publisher is ready with a valid topic name.
 void TeleopPanel::sendVel()
 {
+  if (!enable_stop_pub_->isChecked() && !drive_widget_->isClicked()) return;
+
   if (rclcpp::ok() && velocity_publisher_ != NULL) {
     geometry_msgs::msg::Twist msg;
     msg.linear.x = linear_velocity_;

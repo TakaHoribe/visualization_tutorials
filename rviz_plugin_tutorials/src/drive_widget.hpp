@@ -66,6 +66,8 @@ public:
   // good size for this.
   virtual QSize sizeHint() const {return QSize(150, 150);}
 
+  bool isClicked() const { return is_clicked_; }
+
 Q_SIGNALS:
   // We emit outputVelocity() whenever it changes.
   void outputVelocity(float linear, float angular);
@@ -83,6 +85,8 @@ protected:
   float angular_velocity_;  // In radians/s
   float linear_scale_;  // In m/s
   float angular_scale_;  // In radians/s
+
+  bool is_clicked_ = false;
 };
 // END_TUTORIAL
 
